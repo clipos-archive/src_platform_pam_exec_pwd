@@ -1,0 +1,151 @@
+=pod
+
+=head1 NAME
+
+B<pam_exec_pwd> - PAM module which calls external commands, optionnaly 
+passing the user's password through their environment.
+
+=head1 DESCRIPTION
+
+B<pam_jail> is a PAM module that can be used to run external commands 
+based on a user's name or groups. Optionnally, the user's password can 
+be passed to some of those external commands through the I<PASSWD>
+environment variable.
+
+=head1 OPTIONS
+
+=over 12
+
+=item B<close_run_all>
+
+When closing a session, don't stop running commands if one of them returns
+an error. All commands are run in a row, and an error is returned at the
+end if at least one of those returned an error.
+
+=back
+
+=head1 MODULE SERVICES PROVIDED
+
+B<pam_exec_pwd> supports the session and auth services. The session service
+is the only one available for running commands (at session opening and / or 
+closing). The auth service does not run any external commands, but saves 
+the user's password for later use by the session service. Thus, it needs to 
+be included in the auth stack whenever some of the commands to be run at 
+session opening will require access to the user's password, and can be safely
+ignored otherwise.
+
+Note also that the user's password can only be made available to external 
+commands at session opening, while only password-less commands can be run 
+when closing the session.
+
+=head1 FILES
+
+B<pam_exec_pwd> uses F</etc/security/exec.conf> as its configuration file, as
+well as files contained in F</etc/security/exec.conf.d>. These files 
+are read in the following order : F<exe.conf> file then directory's regular
+files in alphabetical order.
+These file may contain one or several lines, each of which describe a 
+command to run, how to run it and when, in the following form:
+
+=over 12
+
+=item I<name> I<flags> I<cmd> [I<arg>]
+
+=back
+
+with
+
+=over 12
+
+=item I<name> 
+
+The login name of the user to match. The following command will only be
+run when that user opens or closes a session. Alternatively, if I<name> is 
+prefixed by a '@', it is taken as the name of a group, and the following 
+command will be run when any member of that group opens or closes a session.
+A name of "*" will match every user, regardless of their name or group.
+Prefixing a user or group name with '-' (before the '@', for a group) will 
+invert the match : the command will only be run for users that do not match
+the specified user or group name.
+
+=item I<flags>
+
+Flags giving more information as to when and how to run the command. Each flag
+is represented by a letter, which are then concatenated into I<flags>. The 
+following letters are supported:
+
+=over 24
+
+=item 'o'
+
+Run the command when opening a session.
+
+=item 'c'
+
+Run the command when closing a session.
+
+=item 'p'
+
+Give the user's password to the executed command, through its environment.
+This is only supported if the command is run when opening a session.
+
+=item 'u'
+
+Run the command under the user's gid and uid, rather than under the identity
+of the authenticating process.
+
+=back
+
+=item I<cmd>
+
+The command to be run (full path).
+
+=item I<arg>
+
+An optional, single, argument for the command.
+
+=back
+
+Note that commands that require a user password should be placed before
+those that do not in the configuration file, to avoid running only the
+latter when B<pam_exec_pwd> fails to get a user's password for some 
+reason.
+
+=head1 ENVIRONMENT
+
+The commands run by B<pam_exec_pwd> get the name of the user on behalf
+of whom they are called through the I<USER> variable. Optionnally, the password
+of that user can also be passed as the I<PASSWD> variable.
+
+=head1 RETURN VALUES
+
+=over 12
+
+=item PAM_SUCCESS 
+
+Session service: all external commands were run successfully.
+Auth service: the user's password was retrieved and, if non empty, 
+saved successfully.
+Setcred service: automatic.
+
+=item PAM_AUTH_ERR 
+
+An error was encountered by the auth service.
+
+=item PAM_SERVICE_ERR 
+
+An error was encountered by the session service, or in one of the external 
+commands run at that point. An unsupported module (password, account) was 
+called.
+
+=back
+
+=head1 AUTHOR 
+
+Vincent Strubel <L<clipos@ssi.gouv.fr>>
+
+=head1 SEE ALSO
+
+L<pam(8)|pam>
+ 
+=cut

@@ -1,0 +1,30 @@
+# CLIP ChangeLog for sys-auth/pam_exec_pwd
+
+*pam_exec_pwd-1.0.3-r1 (19 Sep 2016)
+
+  19 Sep 2016; Nicolas Belouin <clipos@ssi.gouv.fr>
+  +pam_exec_pwd-1.0.3-r1.ebuild, -pam_exec_pwd-1.0.3.ebuild:
+  Change mkdir+chmod to dodir
+
+*pam_exec_pwd-1.0.3 (11 Aug 2016)
+
+  11 Aug 2016; Nicolas Belouin <clipos@ssi.gouv.fr>
+  +pam_exec_pwd-1.0.3.ebuild, -pam_exec_pwd-1.0.2.ebuild:
+
+*pam_exec_pwd-1.0.2 (26 Mar 2008)
+
+  26 Mar 2008; Vincent Strubel <clipos@ssi.gouv.fr>
+  +pam_exec_pwd-1.0.2.ebuild, -pam_exec_pwd-1.0.1.ebuild:
+  Add support for inverted matches and catch-all matches.
+
+*pam_exec_pwd-1.0.1 (28 Nov 2007)
+
+  28 Nov 2007; Vincent Strubel <clipos@ssi.gouv.fr>
+  +pam_exec_pwd-1.0.1.ebuild, -pam_exec_pwd-1.0.ebuild:
+  Add support for a 'close_run_all' option.
+
+*pam_exec_pwd-1.0 (30 Oct 2007)
+
+  30 Oct 2007; Vincent Strubel <clipos@ssi.gouv.fr>
+  pam_exec_pwd-1.0.ebuild:
+  Initial import. 
